@@ -1,0 +1,20 @@
+{
+    "name": "hostpapa/deployer-recipes",
+    "description": "HostPapa Deployer Recipes",
+    "type": "library",
+    "require": {
+        "gorkalaucirica/hipchat-v2-api-client": "^1.5"
+    },
+    "keywords": [
+      "deployer",
+      "recipes",
+      "deploy",
+      "deployment",
+      "hipchat"
+    ],
+    "autoload": {
+      "files": [
+        "autoload.php"
+      ]
+    }
+}

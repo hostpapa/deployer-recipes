@@ -32,8 +32,8 @@ use GorkaLaucirica\HipchatAPIv2Client\API\RoomAPI;
  * Deployer global varialbe
  */
 function notifyHipchat($type = 'info', $notification) {
-    $roomId = get('hp_hipchat_room_id');
-    $roomToken = get('hp_hipchat_room_token');
+    $roomId = get('hipchat_room_id');
+    $roomToken = get('hipchat_room_token');
 
     //TODO: Ensure these are set, otherwise show warning but don't fail completely
 

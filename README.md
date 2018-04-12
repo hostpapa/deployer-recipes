@@ -14,7 +14,7 @@ project you're adding notifications to.
 ```json
 
 "repositories": [
-    { "type": "vcs", "url": "https://garbage@bitbucket.org/HostPapa/deployer-recipes.git" }
+    { "type": "vcs", "url": "https://bitbucket.org/HostPapa/deployer-recipes.git" }
 ],
 ```
 
@@ -22,19 +22,10 @@ Add the following to the development requirements
 
 ```json
 "require-dev": {
-    "deployer/deployer": "^4.3",
+    "deployer/deployer": "^6.1",
     "hostpapa/deployer-recipes": "dev-master"
 },
 ```
-
-**Note:** The `garbage` portion of the repository URL is important. It doesn't
-matter what's here. This is to get Composer to prompt the developer for a
-Bitbucket username & password on first use. This can be stored in a global
-location on the developer's machine for future use.
-
-SSH can't be used due to how Bitbucket handles SSH keys for developers with more
-than one Bitbucket account. This is a workaround that seems to work for the time
-being.
 
 ## Usage
 

@@ -1,31 +1,26 @@
 # HostPapa Deployer Recipes
 
-This repository houses common Deployer recipes used by all projects.
+## Installing
 
-With this being a private repository and due to some quirks in how Bitbucket
-handles SSH keys, it needs to be set up in a special way in the Composer
-configuration file.
+Define this repository in your Composer Schema
 
-## Installation
-
-Add the following line to the repositories section of the `composer.json` of the
-project you're adding notifications to.
-
-```json
-
+```YAML
 "repositories": [
-    { "type": "vcs", "url": "https://bitbucket.org/HostPapa/deployer-recipes.git" }
+    {
+        "type": "vcs",
+        "url": "https://bitbucket.org/HostPapa/deployer-recipes"
+    }
 ],
 ```
 
-Add the following to the development requirements
+And add a version requirement to your dev dependencies
+`"hostpapa/deployer-recipes": "^1.0.0"`
 
-```json
-"require-dev": {
-    "deployer/deployer": "^6.1",
-    "hostpapa/deployer-recipes": "dev-master"
-},
-```
+## Versioning
+
+This repo follows [Semantic Versioning](https://semver.org/) for any changes. If
+there are any backwards incompatible changes to recipes, we *must* declare a new
+major version number.
 
 ## Usage
 

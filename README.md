@@ -1,40 +1,26 @@
 # HostPapa Deployer Recipes
 
-This repository houses common Deployer recipes used by all projects.
+## Installing
 
-With this being a private repository and due to some quirks in how Bitbucket
-handles SSH keys, it needs to be set up in a special way in the Composer
-configuration file.
+Define this repository in your Composer Schema
 
-## Installation
-
-Add the following line to the repositories section of the `composer.json` of the
-project you're adding notifications to.
-
-```json
-
+```YAML
 "repositories": [
-    { "type": "vcs", "url": "https://garbage@bitbucket.org/HostPapa/deployer-recipes.git" }
+    {
+        "type": "vcs",
+        "url": "https://bitbucket.org/HostPapa/deployer-recipes"
+    }
 ],
 ```
 
-Add the following to the development requirements
+And add a version requirement to your dev dependencies
+`"hostpapa/deployer-recipes": "^1.0.0"`
 
-```json
-"require-dev": {
-    "deployer/deployer": "^4.3",
-    "hostpapa/deployer-recipes": "dev-master"
-},
-```
+## Versioning
 
-**Note:** The `garbage` portion of the repository URL is important. It doesn't
-matter what's here. This is to get Composer to prompt the developer for a
-Bitbucket username & password on first use. This can be stored in a global
-location on the developer's machine for future use.
-
-SSH can't be used due to how Bitbucket handles SSH keys for developers with more
-than one Bitbucket account. This is a workaround that seems to work for the time
-being.
+This repo follows [Semantic Versioning](https://semver.org/) for any changes. If
+there are any backwards incompatible changes to recipes, we *must* declare a new
+major version number.
 
 ## Usage
 

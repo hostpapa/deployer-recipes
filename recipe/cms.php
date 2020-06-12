@@ -9,19 +9,17 @@ namespace Deployer;
 use Deployer\Utility\Httpie;
 
 /**
- * Process the CMS cache path to ensure there we're removing the contents, not
- * the folder itself
+ * Process the CMS cache path to ensure we're dealing with the *folder* not the
+ * contents
  */
 set('processed_cms_cache_path', function () {
     $cacheFolder = get('cms_cache_path', false);
-    if ($cacheFolder && substr($cacheFolder, -1) == '/') {
-        $cacheFolder .= '*';
-    } elseif ($cacheFolder && substr($cacheFolder, -2) !== '/*') {
-        $cacheFolder .= '/*';
-    }
+
+    // Trim the trailing slash if there is one
+    $cacheFolder = rtrim($cacheFolder, '/');
 
     // REALLY be sure we're not about to erase the server
-    if ($cacheFolder == "/*") {
+    if ($cacheFolder == "/") {
         throw new \Exception('Incorrect cache folder path');
     }
 
@@ -65,10 +63,31 @@ task("cms:clear_cache", function () {
             ->send();
     }
 
-    // Remove the contents of the cache folder
-    writeln("  ➔ Removing CMS SS Cache files located at {{processed_cms_cache_path}}");
-    run("rm -rf {{processed_cms_cache_path}}");
+    // Remove the "old" SS Cache folder _if it exists_
+    if (test('[ -d {{processed_cms_cache_path}}-old ]')) {
+        writeln("  ➔ Removing OLD CMS SS Cache folder located at {{processed_cms_cache_path}}-old");
+        run("rm -rf {{processed_cms_cache_path}}-old");
+    } else {
+        writeln("  ➔ No OLD CMS SS Cache folder found. Skipping removal.");
+    }
 
+    // Pre-create the new folder so we can set permissions before moving anything
+    writeln("  ➔ Pre-creating NEW CMS SS Cache folder located at {{processed_cms_cache_path}}-new to pre-set permissions");
+    run("mkdir -p {{processed_cms_cache_path}}-new");
+
+    // Invoke deploy:writable again to ensrue the new folder has the correct permissions
+    writeln("  ➔ Ensuring permissions are correct pre-move");
+    invoke('deploy:writable');
+
+    // Move the current cache folder to "old" to allow any active write connections to finish
+    writeln("  ➔ Moving the live SS Cache folder to become old");
+    run("mv {{processed_cms_cache_path}} {{processed_cms_cache_path}}-old");
+
+    // Create the cache folder again
+    writeln("  ➔ Moving the new, empty, cache folder into place");
+    run("mv {{processed_cms_cache_path}}-new {{processed_cms_cache_path}}");
+
+    // Trigger a fresh Dev Build
     writeln("  ➔ Triggering CMS Dev Build via browser (wget) using URL {{cms_devbuild_url}}");
     run("wget --no-check-certificate --spider --http-user={$httpUser} --http-password={$httpPass} {{cms_devbuild_url}}");
 

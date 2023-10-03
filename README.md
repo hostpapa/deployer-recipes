@@ -8,7 +8,7 @@ Define this repository in your Composer Schema
 "repositories": [
     {
         "type": "vcs",
-        "url": "https://bitbucket.org/HostPapa/deployer-recipes"
+        "url": "https://github.com/hostpapa/deployer-recipes"
     }
 ],
 ```

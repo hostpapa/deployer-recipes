@@ -30,6 +30,12 @@ set('processed_cms_cache_path', function () {
     return $cacheFolder;
 });
 
+/**
+ * The address the Dev Build request is sent to on the server. The default keeps the request on the machine: the
+ * public hostname resolves to Cloudflare, whose Access policies a server can't pass. Empty uses the public DNS.
+ */
+set('cms_devbuild_resolve_ip', '127.0.0.1');
+
 desc("Clear and rebuild CMS's Silverstripe cache");
 task("cms:clear_cache", function () {
     $httpUser = get('cms_http_user', false);
@@ -88,8 +94,17 @@ task("cms:clear_cache", function () {
     run("mv {{processed_cms_cache_path}}-new {{processed_cms_cache_path}}");
 
     // Trigger a fresh Dev Build
-    writeln("  ➔ Triggering CMS Dev Build via browser (wget) using URL {{cms_devbuild_url}}");
-    run("wget --no-check-certificate --spider --http-user={$httpUser} --http-password={$httpPass} {{cms_devbuild_url}}");
+    $devBuildUrl = get('cms_devbuild_url');
+    $resolveIp = get('cms_devbuild_resolve_ip', '');
+    $resolve = '';
+    if ($resolveIp) {
+        $host = parse_url($devBuildUrl, PHP_URL_HOST);
+        $port = parse_url($devBuildUrl, PHP_URL_PORT) ?: (parse_url($devBuildUrl, PHP_URL_SCHEME) === 'http' ? 80 : 443);
+        $resolve = '--resolve ' . escapeshellarg("$host:$port:$resolveIp") . ' ';
+    }
+    writeln("  ➔ Triggering CMS Dev Build via browser (curl) using URL $devBuildUrl" . ($resolveIp ? " on $resolveIp" : ''));
+    // -f fails on an HTTP error, so a refused request stops the deploy instead of passing as a login page
+    run("curl -fsSkL -o /dev/null {$resolve}-u " . escapeshellarg("$httpUser:$httpPass") . ' ' . escapeshellarg($devBuildUrl));
 
     if (get('slack_webhook', false)) {
         Httpie::post(get('slack_webhook'))

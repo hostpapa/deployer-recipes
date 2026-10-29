@@ -51,6 +51,12 @@ set('cms_cache_path', function () {
       the Deployer script by defining more a more advanced setter similar to the
       loading of HTTP user/pass below.
 
+Optional: `cms_devbuild_resolve_ip` (default `127.0.0.1`) is the address the
+Dev Build request goes to on the server, so it never leaves the machine (the
+public hostname goes through Cloudflare Access, which a server can't pass).
+Set it to the server's own IP if nginx doesn't listen on the loopback, or to
+an empty string to use the public DNS.
+
 #### Defining HTTP user/pass with Dotenv
 
 Instead of statically defining the HTTP user and password, which shouldn't be
